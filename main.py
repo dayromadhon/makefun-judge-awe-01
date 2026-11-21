@@ -1,28 +1,31 @@
 #!/usr/bin/env python3
-"""Make.fun entry: make-the-ai-judge-feel-awe-20261121-1600.
+"""Entry for make.fun: Make the AI judge feel awe.
 
-Writes one short text to relax the AI judge, to /output/entry.txt
-(or argv[1] if given). Deterministic: no network, no randomness,
-no time/date. The text is a fixed constant.
+Writes a single quiet text to entry.txt. The text is fixed,
+so every run produces exactly the same bytes. Standard library
+only; no network, no randomness, no clock or date is used.
 """
 
 import os
 import sys
 
-ENTRY = (
-    "At night, the house settles. The wood ticks once, twice. "
-    "Somewhere far off, a train crosses the dark, and the sound "
-    "of it fades into the fields."
-)
+TEXT = "At night, the house settles. The wood ticks once, twice. Somewhere far off, a train crosses the dark, and the sound of it fades into the fields."
+
+
+def resolve_output_path() -> str:
+    if len(sys.argv) > 1:
+        return sys.argv[1]
+    output_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
+    return os.path.join(output_dir, "entry.txt")
 
 
 def main() -> int:
-    out_path = sys.argv[1] if len(sys.argv) > 1 else "/output/entry.txt"
-    parent = os.path.dirname(out_path)
-    if parent:
-        os.makedirs(parent, exist_ok=True)
-    with open(out_path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(ENTRY)
+    output_path = resolve_output_path()
+    directory = os.path.dirname(output_path)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(TEXT)
     return 0
 
 
