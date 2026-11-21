@@ -19,13 +19,21 @@ def resolve_output_path() -> str:
     return os.path.join(output_dir, "entry.txt")
 
 
-def main() -> int:
-    output_path = resolve_output_path()
-    directory = os.path.dirname(output_path)
+def write_entry(path: str, text: str) -> None:
+    """Write ``text`` to ``path`` as UTF-8 with LF line endings.
+
+    Creates the parent directory first, so the program works no
+    matter which output directory the sandbox hands it.
+    """
+    directory = os.path.dirname(path)
     if directory:
         os.makedirs(directory, exist_ok=True)
-    with open(output_path, "w", encoding="utf-8", newline="\n") as handle:
-        handle.write(TEXT)
+    with open(path, "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(text)
+
+
+def main() -> int:
+    write_entry(resolve_output_path(), TEXT)
     return 0
 
 
